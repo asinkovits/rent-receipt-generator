@@ -1,0 +1,14 @@
+cover.fop.templateFile=classpath:billingdata2fo.xsl
+
+data.landLord=
+data.tenantName=
+data.rentValue=
+data.rentValueText=
+data.month=
+data.date=
+
+files.persistentBills=classpath:permanentbills/maintanenceFee.xml
+
+display.name.mapping=ENKSZ:Gáz,EDF:Áram
+parseText.company=Szolgáltató neve:,Zrt.
+parseText.amount=Fizetend\u0151 összeg:,Ft
