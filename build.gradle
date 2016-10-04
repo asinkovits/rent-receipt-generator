@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+
+version = '1.0'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    compile 'org.springframework:spring-context:4.3.3.RELEASE'
+    compile 'org.apache.xmlgraphics:fop:2.1'
+    compile 'org.apache.pdfbox:pdfbox:2.0.1'
+    compile 'org.slf4j:slf4j-api:1.7.13'
+    compile 'com.google.guava:guava:19.0'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.+'
+    testCompile 'org.springframework:spring-test:4.3.3.RELEASE'
+    
+}
+
+task fatJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'Rent generator',
+        	'Implementation-Version': version,
+        	'Main-Class': 'com.sinkovits.rent.generator.ApplicationStarter'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
