@@ -1,4 +1,4 @@
-package com.sinkovits.rent.generator.cover;
+package com.sinkovits.rent.generator;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -24,21 +24,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.stereotype.Component;
 
 import com.sinkovits.rent.generator.exception.GenerationFailedException;
+import com.sinkovits.rent.generator.util.ArgumentResolver;
 
-@Component
-public class CoverGenerator {
-
+public class CoverPdfGenerator implements Application {
+	
 	public static final String FOP_XCONF = "classpath:fop.xconf";
-
-	public CoverGenerator() {
-		super();
-	}
 
 	@Value("${cover.fop.templateFile}")
 	private String templateFile;
+
+	@Autowired
+	private ArgumentResolver argsResolver;
 	@Autowired
 	private ResourceLoader resourceLoader;
 	@Autowired
@@ -46,10 +44,12 @@ public class CoverGenerator {
 	@Autowired
 	private FopFactory fopFactory;
 
-	public void generate(Path inputFilePath, Path outputFilePath) throws GenerationFailedException {
+	public void execute() throws GenerationFailedException {
+		Path input = argsResolver.getWorkDir().resolve(argsResolver.getDataFile());
+		Path output = argsResolver.getWorkDir().resolve(argsResolver.getCoverFile());
 		Resource template = resourceLoader.getResource(templateFile);
-		try (BufferedReader in = Files.newBufferedReader(inputFilePath);
-				OutputStream out = new BufferedOutputStream(Files.newOutputStream(outputFilePath));
+		try (BufferedReader in = Files.newBufferedReader(input);
+				OutputStream out = new BufferedOutputStream(Files.newOutputStream(output));
 				InputStream templateInputStream = template.getInputStream()) {
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 			Transformer transformer = transformerFactory.newTransformer(new StreamSource(templateInputStream));
@@ -58,23 +58,7 @@ public class CoverGenerator {
 			transformer.transform(src, res);
 		} catch (TransformerException | FOPException | IOException ex) {
 			throw new GenerationFailedException("PDF generation failed!", ex);
-		}
-	}
-
-	public void setTemplateFile(String templateFile) {
-		this.templateFile = templateFile;
-	}
-
-	public void setResourceLoader(ResourceLoader resourceLoader) {
-		this.resourceLoader = resourceLoader;
-	}
-
-	public void setTransformerFactory(TransformerFactory transformerFactory) {
-		this.transformerFactory = transformerFactory;
-	}
-
-	public void setFopFactory(FopFactory fopFactory) {
-		this.fopFactory = fopFactory;
+		}		
 	}
 
 }

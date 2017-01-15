@@ -1,30 +1,33 @@
-package com.sinkovits.rent.generator.xml.command;
+package com.sinkovits.rent.generator.xml;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import com.sinkovits.rent.generator.GeneratorContext;
 import com.sinkovits.rent.generator.model.BillingData;
 import com.sinkovits.rent.generator.model.BillingData.Builder;
 import com.sinkovits.rent.generator.model.BillingFiles;
 import com.sinkovits.rent.generator.model.BillingItem;
+import com.sinkovits.rent.generator.util.ArgumentResolver;
 import com.sinkovits.rent.generator.util.DataReader;
 import com.sinkovits.rent.generator.util.Utils;
 
 @Component
+@Order(value=1)
 public class XmlBillingDataBuilder implements BillingDataBuilderCommand {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(XmlBillingDataBuilder.class);
 
 	@Autowired
 	public DataReader dataReader;
+	@Autowired
+	private ArgumentResolver argumentResolver;
 	private Builder builder;
 
 	public void setDataReader(DataReader dataReader) {
@@ -32,12 +35,21 @@ public class XmlBillingDataBuilder implements BillingDataBuilderCommand {
 	}
 
 	@Override
-	public void execute(GeneratorContext context, Builder builder) {
+	public void execute(Builder builder) {
 		this.builder = builder;
-		File workDir = context.getWorkDirPath().toFile();
+		File workDir = argumentResolver.getWorkDir().toFile();
+		System.out.println(workDir);
 		String[] xmlFiles = workDir.list((dir, fileName) -> Utils.isXml(fileName));
 		Arrays.stream(xmlFiles)
-				.forEach(fileName -> tryPopulate(dataReader.read(context.getWorkDirPath().resolve(fileName).toFile())));
+				.forEach(fileName -> processXml(fileName));
+	}
+
+	private void processXml(String fileName) {
+		if(!argumentResolver.getDataFile().equals(fileName)){
+			File file = argumentResolver.getWorkDir().resolve(fileName).toFile();
+			Object xml = dataReader.read(file);
+			tryPopulate(xml);
+		}
 	}
 
 	public void populate(BillingFiles files) {

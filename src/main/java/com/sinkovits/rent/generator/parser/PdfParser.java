@@ -17,12 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.sinkovits.rent.generator.GeneratorContext;
 import com.sinkovits.rent.generator.model.BillingData.Builder;
 import com.sinkovits.rent.generator.model.BillingItem;
+import com.sinkovits.rent.generator.util.ArgumentResolver;
 import com.sinkovits.rent.generator.util.DisplayNameResolver;
 import com.sinkovits.rent.generator.util.Utils;
-import com.sinkovits.rent.generator.xml.command.BillingDataBuilderCommand;
+import com.sinkovits.rent.generator.xml.BillingDataBuilderCommand;
 
 @Component
 public class PdfParser implements BillingDataBuilderCommand {
@@ -33,6 +33,10 @@ public class PdfParser implements BillingDataBuilderCommand {
 	private DisplayNameResolver nameResolver;
 	private TextParser companyParser;
 	private TextParser amountParser;
+	
+	@Autowired
+	private ArgumentResolver argsResolver;
+
 
 	@Autowired
 	public void setCompanyParser(@Value("${parseText.company}") String company) {
@@ -51,11 +55,13 @@ public class PdfParser implements BillingDataBuilderCommand {
 		this.nameResolver = nameResolver;
 	}
 
-	public void execute(GeneratorContext context, Builder builder) {
-		String[] files = context.getWorkDirPath().toFile()
-				.list((dir, fileName) -> (Utils.isPdf(fileName) && !context.getCoverFile().equals(fileName)));
+	public void execute(Builder builder) {
+		String[] files = argsResolver.getWorkDir().toFile()
+				.list((dir, fileName) -> (Utils.isPdf(fileName) && 
+						!argsResolver.getCoverFile().equals(fileName) &&
+						!argsResolver.getBatchFile().equals(fileName)));
 		for (String file : files) {
-			File pdfFile = context.getWorkDirPath().resolve(file).toFile();
+			File pdfFile = argsResolver.getWorkDir().resolve(file).toFile();
 			Optional<BillingItem> parsedItem = parse(pdfFile);
 			if (parsedItem.isPresent()) {
 				builder.addItem(parsedItem.get());

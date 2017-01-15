@@ -1,4 +1,4 @@
-package com.sinkovits.rent.generator.batch;
+package com.sinkovits.rent.generator;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,32 +14,28 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
-import com.sinkovits.rent.generator.GeneratorContext;
 import com.sinkovits.rent.generator.model.BillingData;
+import com.sinkovits.rent.generator.util.ArgumentResolver;
 import com.sinkovits.rent.generator.util.DataReader;
 import com.sinkovits.rent.generator.util.Utils;
 
-@Component
-public class BatchGenerator {
+public class BatchPdfGenerator implements Application {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BatchGenerator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BatchPdfGenerator.class);
 
 	@Autowired
 	private DataReader reader;
-	private String coverFileName;
+	@Autowired
+	private ArgumentResolver argResolver;
 
-	public void setReader(DataReader reader) {
-		this.reader = reader;
-	}
+	@Override
+	public void execute() {
+		Path workDirPath = argResolver.getWorkDir();
+		String inputFile = argResolver.getDataFile();
+		String outputFile = argResolver.getBatchFile();
 
-	public void generate(GeneratorContext context) {
-		Path workDirPath = context.getWorkDirPath();
-		String inputFile = context.getDataFile();
-		String outputFile = context.getBatchFile();
-		this.coverFileName = context.getCoverFile();
 		BillingData billingData = reader.read(workDirPath.resolve(inputFile).toFile(), BillingData.class);
 		List<PDDocument> pdfFiles = Lists.newArrayList();
 		try {
@@ -64,12 +60,23 @@ public class BatchGenerator {
 	}
 
 	private void addCoverToBatch(List<PDDocument> pdfFiles, PDDocument doc, Path workDirPath) throws IOException {
-		File file = workDirPath.resolve(coverFileName).toFile();
+		File file = workDirPath.resolve(argResolver.getCoverFile()).toFile();
 		if (file.exists()) {
 			PDDocument cover = PDDocument.load(file);
 			pdfFiles.add(cover);
 			merge(doc, cover);
 		}
+	}
+
+	private void merge(PDDocument doc1, PDDocument doc2) throws IOException {
+		for (PDPage page : doc2.getPages()) {
+			doc1.addPage(page);
+		}
+	}
+
+	private void addFilesToBatch(BillingData billingData, List<PDDocument> pdfFiles, PDDocument doc, Path workDirPath)
+			throws IOException {
+		addFiles(pdfFiles, doc, billingData.getFiles(), workDirPath);
 	}
 
 	private void addFiles(List<PDDocument> pdfFiles, PDDocument doc, List<String> files, Path workDirPath)
@@ -95,17 +102,6 @@ public class BatchGenerator {
 		return filePath;
 	}
 
-	private void addFilesToBatch(BillingData billingData, List<PDDocument> pdfFiles, PDDocument doc, Path workDirPath)
-			throws IOException {
-		addFiles(pdfFiles, doc, billingData.getFiles(), workDirPath);
-	}
-
-	private void merge(PDDocument doc1, PDDocument doc2) throws IOException {
-		for (PDPage page : doc2.getPages()) {
-			doc1.addPage(page);
-		}
-	}
-
 	private void addImage(PDDocument doc, File file) throws IOException {
 		if (file.exists()) {
 			PDPage page = new PDPage();
@@ -115,7 +111,7 @@ public class BatchGenerator {
 			contentStream.drawImage(pdImage, 0, 0, pdImage.getWidth() * scale, pdImage.getHeight() * scale);
 			contentStream.close();
 			doc.addPage(page);
-		}else{
+		} else {
 			LOGGER.warn("File  %d not found!, Skipping.", file.getAbsolutePath());
 		}
 	}

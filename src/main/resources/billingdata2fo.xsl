@@ -80,7 +80,7 @@
       <fo:flow flow-name="xsl-region-body">
 
         <fo:block font-size="14pt" text-align-last="center" text-decoration="underline">Átvételi elismervény</fo:block>
-        <fo:block space-before="98pt" font-size="11pt">Alulírott <xsl:value-of select="owner" /> a lakbér összegét <xsl:value-of select="rentValue" /> Ft-t, azaz
+        <fo:block space-before="98pt" font-size="11pt">Alulírott <xsl:value-of select="landLord" /> a lakbér összegét <xsl:value-of select="rentValue" /> Ft-t, azaz
           <xsl:value-of select="rentValueText" /> forintot átvettem.
         </fo:block>
         <fo:block space-before="184pt" font-size="11pt">
@@ -88,7 +88,7 @@
           <xsl:value-of select="date" />
         </fo:block>
         <fo:block space-before="48pt" font-size="11pt">..........................................</fo:block>
-        <fo:block start-indent="25pt" font-size="11pt"><xsl:value-of select="owner" /></fo:block>
+        <fo:block start-indent="25pt" font-size="11pt"><xsl:value-of select="landLord" /></fo:block>
       </fo:flow>
     </fo:page-sequence>
   </xsl:template>

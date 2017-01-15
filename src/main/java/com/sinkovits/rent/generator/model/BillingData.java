@@ -1,7 +1,9 @@
 package com.sinkovits.rent.generator.model;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -47,6 +49,10 @@ public class BillingData {
 	@XmlElement
 	public List<String> getFiles() {
 		return files.getFiles();
+	}
+
+	public BillingFiles getBillingFiles() {
+		return files;
 	}
 
 	public void setFiles(BillingFiles files) {
@@ -138,6 +144,41 @@ public class BillingData {
 			return this;
 		}
 
+		public Builder withHeader(Optional<String> header) {
+			this.header = header.orElse(this.header);
+			return this;
+		}
+
+		public Builder withDate(Optional<String> date) {
+			this.date = date.orElse(this.date);
+			return this;
+		}
+
+		public Builder withLandLord(Optional<String> landLord) {
+			this.landLord = landLord.orElse(this.landLord);
+			return this;
+		}
+
+		public Builder withTenant(Optional<String> tenant) {
+			this.tenant = tenant.orElse(this.tenant);
+			return this;
+		}
+
+		public Builder withRentValue(Optional<String> rentValue) {
+			this.rentValue = rentValue.orElse(this.rentValue);
+			return this;
+		}
+
+		public Builder withRentValueText(Optional<String> rentValueText) {
+			this.rentValueText = rentValueText.orElse(this.rentValueText);
+			return this;
+		}
+		
+		public Builder withBillingFiles(Optional<BillingFiles> files) {
+			this.files = files.orElse(this.files);
+			return this;
+		}
+
 		public Builder addItems(Collection<BillingItem> items) {
 			this.items.addAll(items);
 			return this;
@@ -162,16 +203,17 @@ public class BillingData {
 			this.files.getFiles().add(file);
 			return this;
 		}
-		
+
 		public Builder withBillingData(BillingData data) {
-			header = data.getHeader();
-			date = data.getDate();
-			landLord = data.getLandLord();
-			tenant = data.getTenant();
-			rentValue = data.getRentValue();
-			rentValueText = data.getRentValueText();
-			items = data.getItems();
-			files = data.files;
+			withHeader(Optional.ofNullable(data.getHeader()));
+			withDate(Optional.ofNullable(data.getDate()));
+			withLandLord(Optional.ofNullable(data.getLandLord()));
+			withTenant(Optional.ofNullable(data.getTenant()));
+			withRentValue(Optional.ofNullable(data.getRentValue()));
+			withRentValueText(Optional.ofNullable(data.getRentValueText()));
+			Optional.ofNullable(data.getItems()).orElse(Collections.<BillingItem>emptyList())
+					.forEach(item -> this.items.add(item));
+			withBillingFiles(Optional.ofNullable(data.getBillingFiles()));
 			return this;
 
 		}
@@ -189,8 +231,8 @@ public class BillingData {
 			return result;
 		}
 	}
-	
-	public static Builder builder(){
+
+	public static Builder builder() {
 		return new Builder();
 	}
 }
