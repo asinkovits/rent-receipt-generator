@@ -11,9 +11,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import com.sinkovits.rent.generator.core.DataReader;
 import com.sinkovits.rent.generator.model.BillingData.Builder;
 import com.sinkovits.rent.generator.model.BillingItem;
-import com.sinkovits.rent.generator.util.DataReader;
 
 @Component
 @Order(value=1)

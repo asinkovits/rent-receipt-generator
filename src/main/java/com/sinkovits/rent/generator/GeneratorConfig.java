@@ -16,6 +16,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.xml.sax.SAXException;
 
+import com.sinkovits.rent.generator.core.Application;
+
 @Configuration
 // @ComponentScan({ "com.sinkovits.rent.generator.cover",
 // "com.sinkovits.rent.generator.batch",

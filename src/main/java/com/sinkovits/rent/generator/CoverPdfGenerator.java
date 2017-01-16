@@ -25,8 +25,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
+import com.sinkovits.rent.generator.core.Application;
 import com.sinkovits.rent.generator.exception.GenerationFailedException;
-import com.sinkovits.rent.generator.util.ArgumentResolver;
+import com.sinkovits.rent.generator.util.ParamResolver;
 
 public class CoverPdfGenerator implements Application {
 	
@@ -36,7 +37,7 @@ public class CoverPdfGenerator implements Application {
 	private String templateFile;
 
 	@Autowired
-	private ArgumentResolver argsResolver;
+	private ParamResolver argsResolver;
 	@Autowired
 	private ResourceLoader resourceLoader;
 	@Autowired

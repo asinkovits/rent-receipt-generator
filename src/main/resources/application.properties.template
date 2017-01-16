@@ -1,11 +1,14 @@
 cover.fop.templateFile=classpath:billingdata2fo.xsl
 
+applicationName=cover
+dataFile=data.xml
+coverFile=cover.pdf
+batchFile=batch.pdf
+
 data.landLord=
 data.tenantName=
 data.rentValue=
 data.rentValueText=
-data.month=
-data.date=
 
 files.persistentBills=classpath:permanentbills/maintanenceFee.xml
 

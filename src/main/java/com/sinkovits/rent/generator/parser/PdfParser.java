@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 import com.sinkovits.rent.generator.model.BillingData.Builder;
 import com.sinkovits.rent.generator.model.BillingItem;
-import com.sinkovits.rent.generator.util.ArgumentResolver;
+import com.sinkovits.rent.generator.util.ParamResolver;
 import com.sinkovits.rent.generator.util.DisplayNameResolver;
 import com.sinkovits.rent.generator.util.Utils;
 import com.sinkovits.rent.generator.xml.BillingDataBuilderCommand;
@@ -35,7 +35,7 @@ public class PdfParser implements BillingDataBuilderCommand {
 	private TextParser amountParser;
 	
 	@Autowired
-	private ArgumentResolver argsResolver;
+	private ParamResolver argsResolver;
 
 
 	@Autowired

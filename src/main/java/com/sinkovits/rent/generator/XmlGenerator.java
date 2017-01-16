@@ -5,10 +5,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.sinkovits.rent.generator.core.Application;
+import com.sinkovits.rent.generator.core.DataWriter;
 import com.sinkovits.rent.generator.model.BillingData;
 import com.sinkovits.rent.generator.model.BillingData.Builder;
-import com.sinkovits.rent.generator.util.ArgumentResolver;
-import com.sinkovits.rent.generator.util.DataWriter;
+import com.sinkovits.rent.generator.util.ParamResolver;
 import com.sinkovits.rent.generator.xml.BillingDataBuilderCommand;
 
 public class XmlGenerator implements Application {
@@ -18,13 +19,13 @@ public class XmlGenerator implements Application {
 	@Autowired
 	private DataWriter dataWriter;
 	@Autowired
-	private ArgumentResolver argsResolver;
+	private ParamResolver argsResolver;
 
 	public void setDataWriter(DataWriter dataWriter) {
 		this.dataWriter = dataWriter;
 	}
 
-	public void setArgsResolver(ArgumentResolver argsResolver) {
+	public void setArgsResolver(ParamResolver argsResolver) {
 		this.argsResolver = argsResolver;
 	}
 

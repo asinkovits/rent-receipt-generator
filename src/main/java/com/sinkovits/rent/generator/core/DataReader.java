@@ -1,4 +1,4 @@
-package com.sinkovits.rent.generator.util;
+package com.sinkovits.rent.generator.core;
 
 import java.io.File;
 import java.io.InputStream;

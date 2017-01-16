@@ -16,9 +16,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.Lists;
+import com.sinkovits.rent.generator.core.Application;
+import com.sinkovits.rent.generator.core.DataReader;
 import com.sinkovits.rent.generator.model.BillingData;
-import com.sinkovits.rent.generator.util.ArgumentResolver;
-import com.sinkovits.rent.generator.util.DataReader;
+import com.sinkovits.rent.generator.util.ParamResolver;
 import com.sinkovits.rent.generator.util.Utils;
 
 public class BatchPdfGenerator implements Application {
@@ -28,7 +29,7 @@ public class BatchPdfGenerator implements Application {
 	@Autowired
 	private DataReader reader;
 	@Autowired
-	private ArgumentResolver argResolver;
+	private ParamResolver argResolver;
 
 	@Override
 	public void execute() {

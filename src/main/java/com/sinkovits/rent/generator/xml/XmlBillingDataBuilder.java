@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import com.sinkovits.rent.generator.core.DataReader;
 import com.sinkovits.rent.generator.model.BillingData;
 import com.sinkovits.rent.generator.model.BillingData.Builder;
 import com.sinkovits.rent.generator.model.BillingFiles;
 import com.sinkovits.rent.generator.model.BillingItem;
-import com.sinkovits.rent.generator.util.ArgumentResolver;
-import com.sinkovits.rent.generator.util.DataReader;
+import com.sinkovits.rent.generator.util.ParamResolver;
 import com.sinkovits.rent.generator.util.Utils;
 
 @Component
@@ -27,7 +27,7 @@ public class XmlBillingDataBuilder implements BillingDataBuilderCommand {
 	@Autowired
 	public DataReader dataReader;
 	@Autowired
-	private ArgumentResolver argumentResolver;
+	private ParamResolver argumentResolver;
 	private Builder builder;
 
 	public void setDataReader(DataReader dataReader) {
